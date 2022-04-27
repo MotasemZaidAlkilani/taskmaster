@@ -2,5 +2,20 @@
     <string name="app_name">TaskMaster</string>
     <string name="add_task_button">ADD TASK</string>
     <string name="all_task_button">ALL TASK</string>
-
+    <string name="setting">setting</string>
+    <string name="lab27">lab27</string>
+    <string name="lab26">lab26</string>
+    <string name="lab28">lab28</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet quam nisl,
+                 non consequat risus tempus sed. Ut consectetur odio nulla, id cursus risus ultricies ac."
+                 Aliquam sed ornare dolor. Donec bibendum nibh id nibh gravida, id cursus mauris malesuada"
+                . Vestibulum cursus felis magna, quis eleifend sem dignissim a. Phasellus eget commodo neque.
+                 Vestibulum dui orci, faucibus ac tortor nec, aliquam auctor diam. Mauris id erat orci. Nam"
+                 pharetra sagittis euismod. Quisque imperdiet tellus in finibus volutpat. Donec pretium
+                 imperdiet semper. Ut augue sapien, semper ut imperdiet ac, venenatis eget dolor. Aliquam
+                id sem ante. Quisque quis purus molestie, vehicula tortor nec, vehicula lectus. Aenean
+                 et dolor non nisl suscipit sollicitudin quis sed massa. Sed sem lorem, hendrerit vitae
+                 volutpat et, bibendum ac sem.</string>
+    <string name="EnterUsername">enter Username</string>
+    <string name="username">username</string>
 </resources>
