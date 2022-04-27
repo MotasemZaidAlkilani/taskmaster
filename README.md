@@ -12,3 +12,14 @@ The main page should have a heading at the top of the page, an image to mock the
 and buttons at the bottom of the page to allow going to the “add tasks” and “all tasks” page.
 
 ![image description](screenshots/home.jpg)
+
+### Lab 26
+
+#### Task Detail Page
+Create a Task Detail page. It should have a title at the top of the page, and a Lorem Ipsum description.
+
+![image description](screenshots/home.jpg)
+
+![image description](screenshots/home.jpg)
+
+![image description](screenshots/home.jpg)
