@@ -13,13 +13,13 @@ and buttons at the bottom of the page to allow going to the “add tasks” and 
 
 ![image description](screenshots/home.jpg)
 
-### Lab 26
+### Lab 27
 
 #### Task Detail Page
 Create a Task Detail page. It should have a title at the top of the page, and a Lorem Ipsum description.
 
-![image description](screenshots/home.jpg)
+![image description](screenshots/lab26Button.jpg)
 
-![image description](screenshots/home.jpg)
+![image description](screenshots/lab27Button.jpg)
 
-![image description](screenshots/home.jpg)
+![image description](screenshots/lab28Button.jpg)
