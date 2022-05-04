@@ -5,9 +5,10 @@
       <map>
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_add_task_page.xml" value="0.3375" />
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_all_tasks.xml" value="0.1" />
-        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_main.xml" value="0.17696629213483145" />
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_setting.xml" value="0.1" />
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_task_detail.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/task_item_layout.xml" value="0.3494791666666667" />
       </map>
     </option>
   </component>
@@ -16,5 +17,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="jpab" />
+  </component>
+  <component name="SuppressABINotification">
+    <option name="modulesWithSuppressedNotConfigured">
+      <set>
+        <option value="TaskMaster.app" />
+      </set>
+    </option>
   </component>
 </project>
