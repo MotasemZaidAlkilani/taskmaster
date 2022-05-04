@@ -69,39 +69,11 @@
         android:textColor="@color/black"
 
         />
-    <LinearLayout
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/lab26"
-            android:padding="10dp"
-            android:text="@string/lab26"
-            android:onClick="taskDetail"
-            android:layout_margin="10dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:id="@+id/lab27"
-            android:onClick="taskDetail"
-            android:text="@string/lab27"
-            android:layout_margin="10dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:id="@+id/lab28"
-            android:onClick="taskDetail"
-            android:text="@string/lab28"
-            android:layout_margin="10dp"/>
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        />
 </LinearLayout>
 </ScrollView>

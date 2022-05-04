@@ -15,10 +15,12 @@ public class taskDetail extends AppCompatActivity {
         TextView labTextView=findViewById(R.id.lab);
         TextView descriptionTextView=findViewById(R.id.describtion);
         Intent fromHome=getIntent();
-        String labText=fromHome.getStringExtra("lab");
-        labTextView.setText(labText);
-        String loremText = getResources().getString(R.string.lorem);
-        descriptionTextView.setText(loremText);
+        String lab_title=fromHome.getStringExtra("lab_title");
+        String lab_body=fromHome.getStringExtra("lab_body");
+        String lab_state=fromHome.getStringExtra("lab_state");
+
+        labTextView.setText(lab_title);
+        descriptionTextView.setText(lab_body);
 
     }
 }
