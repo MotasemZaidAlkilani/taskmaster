@@ -1,15 +1,28 @@
 package com.example.taskmaster.models;
 
-public class task {
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity
+public class task {
+    @PrimaryKey(autoGenerate = true)
+     private int id;
     private String title;
     private String body;
-    taskState state;
+    public taskState state;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public task(String title, String body) {
         this.title = title;
         this.body = body;
-        this.state=getState();
+        this.state=taskState.NEW;
     }
 
     public String getTitle() {
@@ -28,11 +41,23 @@ public class task {
         this.body = body;
     }
 
-    public taskState getState() {
-        return state;
-    }
+    public String getState() {
+       if(state==taskState.NEW){
+           return "NEW";
+       }
+       else if(state==taskState.ASSIGNED){
+           return "ASSIGNED";
+       }
+       else if(state==taskState.IN_PROGRESS){
+           return "IN_PROGRESS";
+       }
+       else
+           return "COMPLETE";
+       }
+
 
     public void setState(taskState state) {
+
         this.state = state;
     }
 }

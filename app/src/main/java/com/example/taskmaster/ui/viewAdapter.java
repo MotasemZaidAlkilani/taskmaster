@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.RoomDatabase;
 
 import com.example.taskmaster.R;
 import com.example.taskmaster.models.task;
@@ -18,24 +19,26 @@ public class viewAdapter extends RecyclerView.Adapter<viewAdapter.CustomViewHold
     CustomClickListener listener;
 
 
-
     @NonNull
     @Override
     public viewAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItemView = layoutInflater.inflate(R.layout.task_item_layout, parent, false);
         return new CustomViewHolder(listItemView, listener);
+
     }
 
     public viewAdapter(List<task> dataList, CustomClickListener listener) {
         this.dataList = dataList;
+
         this.listener = listener;
     }
 
     @Override
     public void onBindViewHolder(@NonNull viewAdapter.CustomViewHolder holder, int position) {
-        holder.title.setText(dataList.get(position).getTitle());
-//        holder.state.setText(dataList.get(position).getState());
+        task task=dataList.get(position);
+        holder.title.setText(task.getTitle());
+       holder.state.setText(task.getState());
     }
 
     @Override
