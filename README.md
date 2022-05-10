@@ -49,7 +49,7 @@ Modify your Add Task form to save the data entered in as a Task in your local da
 Refactor your homepage’s RecyclerView to display all Task entities in your database.
 
 
-![image description](screenshots/homePageWithRecycleView.jpg)
+![image description](screenshots/HomePageWithDatabaseLocalStorgae.jpg)
 
-![image description](screenshots/homePageWithRecycleView.jpg)
+![image description](screenshots/deatailPageDatabaseLocalStorage.jpg)
 
