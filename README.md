@@ -1,3 +1,4 @@
+
 # taskmaster
 
 ## Overview
@@ -37,3 +38,4 @@ Refactor your homepage to use a RecyclerView for displaying Task data. This shou
 Create a Task class. A Task should have a title, a body, and a state. The state should be one of “new”, “assigned”, “in progress”, or “complete”
 
 ![image description](screenshots/homePageWithRecycleView.jpg)
+
