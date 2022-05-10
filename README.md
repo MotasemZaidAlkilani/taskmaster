@@ -39,3 +39,17 @@ Create a Task class. A Task should have a title, a body, and a state. The state 
 
 ![image description](screenshots/homePageWithRecycleView.jpg)
 
+### Lab 29
+
+#### Add Task Form
+
+Modify your Add Task form to save the data entered in as a Task in your local database.
+
+#### Homepage
+Refactor your homepage’s RecyclerView to display all Task entities in your database.
+
+
+![image description](screenshots/homePageWithRecycleView.jpg)
+
+![image description](screenshots/homePageWithRecycleView.jpg)
+
