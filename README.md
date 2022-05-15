@@ -72,9 +72,10 @@ Add more Espresso UI tests to your application
 Complete / fix up / polish any remaining feature tasks from previous days’ labs.
 
 
-![image description](screenshots/HomePageWithDatabaseLocalStorgae.jpg)
+![image description](screenshots/homePageChangeStates.jpg)
 
-![image description](screenshots/deatailPageDatabaseLocalStorage.jpg)
+![image description](screenshots/taskDetailCompleteButton.jpg)
 
+![image description](screenshots/completedTasks.jpg)
 ________
 
