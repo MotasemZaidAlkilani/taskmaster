@@ -4,6 +4,7 @@
 ## Overview
 This is an application used to mange the tasks.
 
+____________
 ### Lab 26
 
 #### Feature Tasks
@@ -13,6 +14,8 @@ The main page should have a heading at the top of the page, an image to mock the
 and buttons at the bottom of the page to allow going to the “add tasks” and “all tasks” page.
 
 ![image description](screenshots/home.jpg)
+
+_________
 
 ### Lab 27
 
@@ -24,6 +27,8 @@ Create a Task Detail page. It should have a title at the top of the page, and a 
 ![image description](screenshots/lab27Button.jpg)
 
 ![image description](screenshots/lab28Button.jpg)
+
+____________
 
 ### Lab 28
 
@@ -39,6 +44,8 @@ Create a Task class. A Task should have a title, a body, and a state. The state 
 
 ![image description](screenshots/homePageWithRecycleView.jpg)
 
+___________
+
 ### Lab 29
 
 #### Add Task Form
@@ -52,4 +59,22 @@ Refactor your homepage’s RecyclerView to display all Task entities in your dat
 ![image description](screenshots/HomePageWithDatabaseLocalStorgae.jpg)
 
 ![image description](screenshots/deatailPageDatabaseLocalStorage.jpg)
+
+__________
+
+### Lab 31
+
+#### Espresso Testing
+
+Add more Espresso UI tests to your application
+
+#### Polish
+Complete / fix up / polish any remaining feature tasks from previous days’ labs.
+
+
+![image description](screenshots/HomePageWithDatabaseLocalStorgae.jpg)
+
+![image description](screenshots/deatailPageDatabaseLocalStorage.jpg)
+
+________
 
