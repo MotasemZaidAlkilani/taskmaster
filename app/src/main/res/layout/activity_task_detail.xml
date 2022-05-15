@@ -37,6 +37,14 @@
             android:textColor="@color/red"
             android:padding="50dp"
             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete the task"
+            android:id="@+id/complete"
+
+            />
+
     </LinearLayout>
 
 </ScrollView>

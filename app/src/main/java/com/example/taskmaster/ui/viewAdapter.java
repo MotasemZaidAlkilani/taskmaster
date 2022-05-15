@@ -30,7 +30,6 @@ public class viewAdapter extends RecyclerView.Adapter<viewAdapter.CustomViewHold
 
     public viewAdapter(List<task> dataList, CustomClickListener listener) {
         this.dataList = dataList;
-
         this.listener = listener;
     }
 

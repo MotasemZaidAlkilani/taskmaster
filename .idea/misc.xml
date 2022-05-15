@@ -3,11 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_add_task_page.xml" value="0.3375" />
+        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_add_task_page.xml" value="0.1" />
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_all_tasks.xml" value="0.1" />
-        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_main.xml" value="0.17696629213483145" />
+        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_setting.xml" value="0.1" />
-        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_task_detail.xml" value="0.17272727272727273" />
+        <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/activity_task_detail.xml" value="0.25" />
         <entry key="..\:/Users/kilany/taskmaster/app/src/main/res/layout/task_item_layout.xml" value="0.3494791666666667" />
       </map>
     </option>

@@ -4,24 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:id="@+id/allTaskLayout"
     android:layout_height="match_parent"
     tools:context=".allTasks">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Tasks"
+        android:text="Completed Tasks"
         android:textAllCaps="true"
         android:textSize="30dp"
         android:textColor="@color/black"
         android:padding="50dp"
         />
-    <ImageView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_allTask"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:src="@drawable/checklist"
-
+        android:layout_height="match_parent"
         />
 </LinearLayout>

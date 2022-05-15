@@ -2,19 +2,22 @@ package com.example.taskmaster;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
-import static androidx.test.espresso.action.ViewActions.actionWithAssertions;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
+
 
 
 import org.junit.Test;
@@ -47,13 +50,7 @@ public class ExampleInstrumentedTest {
         ActivityScenario.launch(MainActivity.class);
         onView(withId(R.id.myTaskText)).check(matches(withText("My Tasks")));
     }
-    @Test
-    public void testLabButtonsText() {
 
-//        onView(withId(R.id.lab26)).check(matches(withText("lab26")));
-//        onView(withId(R.id.lab27)).check(matches(withText("lab27")));
-//        onView(withId(R.id.lab28)).check(matches(withText("lab28")));
-    }
     @Test
     public void TestRecycleViewIsDisplay() {
         ActivityScenario.launch(MainActivity.class);
@@ -73,11 +70,36 @@ public class ExampleInstrumentedTest {
                 .perform(typeText("database"), closeSoftKeyboard());
         onView(withId(R.id.addTaskBtn)).perform(click());
         pressBack();
-        onView(withId(R.id.recycler_view)).perform(actionWithAssertions(click()));
-
+        onView(ViewMatchers.withId(R.id.recycler_view))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0,
+                        click()));
+        onView(withId(R.id.lab)).check(matches(withText("task 29")));
 
     }
 
+    @Test
+    public void CheckVisbility() {
+        //check main layout
+        ActivityScenario.launch(MainActivity.class);
+        onView(withId(R.id.MainLayout)).check(matches(isDisplayed()));
+        //check add task layout
+        onView(withId(R.id.addTask)).perform(scrollTo());
+        onView(withId(R.id.addTask)).perform(click());
+        onView(withId(R.id.addTaskLayout)).check(matches(isDisplayed()));
+        pressBack();
+        //check all task layout
+        onView(withId(R.id.allTask)).perform(scrollTo());
+        onView(withId(R.id.allTask)).perform(click());
+        onView(withId(R.id.allTaskLayout)).check(matches(isDisplayed()));
+        pressBack();
+        //check all task layout
+        onView(withId(R.id.setting)).perform(scrollTo());
+        onView(withId(R.id.setting)).perform(click());
+        onView(withId(R.id.settingLayout)).check(matches(isDisplayed()));
+        pressBack();
+
+
+    }
 }
 
 
