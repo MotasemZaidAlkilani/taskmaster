@@ -9,7 +9,7 @@ public class task {
      private int id;
     private String title;
     private String body;
-    public taskState state;
+    private String state;
 
     public int getId() {
         return id;
@@ -22,7 +22,7 @@ public class task {
     public task(String title, String body) {
         this.title = title;
         this.body = body;
-        this.state=taskState.NEW;
+        this.state="NEW";
     }
 
     public String getTitle() {
@@ -42,21 +42,11 @@ public class task {
     }
 
     public String getState() {
-       if(state==taskState.NEW){
-           return "NEW";
-       }
-       else if(state==taskState.ASSIGNED){
-           return "ASSIGNED";
-       }
-       else if(state==taskState.IN_PROGRESS){
-           return "IN_PROGRESS";
-       }
-       else
-           return "COMPLETE";
-       }
+        return state;
+    }
 
 
-    public void setState(taskState state) {
+    public void setState(String state) {
 
         this.state = state;
     }

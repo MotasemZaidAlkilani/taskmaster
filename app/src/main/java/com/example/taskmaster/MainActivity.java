@@ -1,7 +1,5 @@
 package com.example.taskmaster;
 
-import static com.example.taskmaster.ui.viewAdapter.dataList;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.taskmaster.models.task;
-import com.example.taskmaster.models.taskState;
 import com.example.taskmaster.ui.AppDatabase;
 import com.example.taskmaster.ui.viewAdapter;
 
-import java.sql.SQLOutput;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,7 +68,12 @@ public class MainActivity extends AppCompatActivity {
         viewAdapter customRecyclerViewAdapter = new viewAdapter(
                 dataList, position -> {
             task task = AppDatabase.getInstance(getApplicationContext()).TaskDao().getTaskById(dataList.get(position).getId());
+            if(task.getState()!="NEW"){
+                AppDatabase.getInstance(getApplicationContext()).TaskDao().changeState("INCOMPLETE",task.getId());
+            }
             Intent taskDetailActivity=new Intent(this,taskDetail.class);
+
+            taskDetailActivity.putExtra("lab_id",task.getId());
             taskDetailActivity.putExtra("lab_title",task.getTitle());
             taskDetailActivity.putExtra("lab_body",task.getBody());
             taskDetailActivity.putExtra("lab_status",task.getState());
