@@ -17,7 +17,7 @@ public interface TaskDao {
     List<task> getAllByState(String state);
 
     @Query("SELECT * FROM task WHERE id = :id")
-    task getTaskById(int id);
+    task getTaskById(String id);
 
     @Query("UPDATE task SET state= :state WHERE id = :id")
     void changeState(String state,int id);
