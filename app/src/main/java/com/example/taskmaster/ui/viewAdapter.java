@@ -1,5 +1,6 @@
 package com.example.taskmaster.ui;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,16 +8,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.RoomDatabase;
 
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
 import com.example.taskmaster.R;
-import com.example.taskmaster.models.task;
 
 import java.util.List;
 
 public class viewAdapter extends RecyclerView.Adapter<viewAdapter.CustomViewHolder> {
-    public static List<task> dataList;
+    public static List<Task> dataList;
     CustomClickListener listener;
+
 
 
     @NonNull
@@ -28,16 +31,16 @@ public class viewAdapter extends RecyclerView.Adapter<viewAdapter.CustomViewHold
 
     }
 
-    public viewAdapter(List<task> dataList, CustomClickListener listener) {
-        this.dataList = dataList;
+    public viewAdapter(List<Task> dataList, CustomClickListener listener) {
+        this.dataList=dataList;
         this.listener = listener;
     }
 
     @Override
     public void onBindViewHolder(@NonNull viewAdapter.CustomViewHolder holder, int position) {
-        task task=dataList.get(position);
+        Task task=dataList.get(position);
         holder.title.setText(task.getTitle());
-       holder.state.setText(task.getState());
+       holder.state.setText(task.getStatus());
     }
 
     @Override
