@@ -78,4 +78,12 @@ Complete / fix up / polish any remaining feature tasks from previous days’ lab
 
 ![image description](screenshots/completedTasks.jpg)
 ________
+### Lab 32
+
+####Add Task Form
+Modify your Add Task form to save the data entered in as a Task to DynamoDB.
+
+####Homepage
+Refactor your homepage’s RecyclerView to display all Task entities in DynamoDB.
+
 
