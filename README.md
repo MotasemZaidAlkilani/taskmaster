@@ -86,4 +86,14 @@ Modify your Add Task form to save the data entered in as a Task to DynamoDB.
 #### Homepage
 Refactor your homepage’s RecyclerView to display all Task entities in DynamoDB.
 
+______
+### Lab 33
+
+#### Add Task Form
+Modify your Add Task form to include either a Spinner or Radio Buttons for which team that task belongs to.
+
+#### Settings Page
+In addition to a username, allow the user to choose their team on the Settings page. Use that Team to display only that team’s tasks on the homepage.
+
+
 
