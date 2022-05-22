@@ -53,6 +53,13 @@
         android:id="@+id/describtion"
         android:hint="Do something"
         android:layout_marginRight="50dp"/>
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        android:id="@+id/spinner"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
