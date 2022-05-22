@@ -95,5 +95,7 @@ Modify your Add Task form to include either a Spinner or Radio Buttons for which
 #### Settings Page
 In addition to a username, allow the user to choose their team on the Settings page. Use that Team to display only that team’s tasks on the homepage.
 
+![image description](screenshots/spinnerInAddTask.jpg)
 
+![image description](screenshots/spinnerInSetting.jpg)
 
