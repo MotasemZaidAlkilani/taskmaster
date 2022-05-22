@@ -18,4 +18,11 @@
                  volutpat et, bibendum ac sem.</string>
     <string name="EnterUsername">enter Username</string>
     <string name="username">username</string>
+
+        <string-array name="teams_numbers">
+            <item>team 1</item>
+            <item>team 2</item>
+            <item>team 3</item>
+        </string-array>
+
 </resources>

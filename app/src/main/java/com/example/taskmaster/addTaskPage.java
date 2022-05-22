@@ -8,14 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.Spinner;
 
 
 import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.model.query.Where;
 import com.amplifyframework.datastore.generated.model.Task;
+import com.amplifyframework.datastore.generated.model.Team;
 
 
 public class addTaskPage extends AppCompatActivity {
@@ -26,52 +30,81 @@ public class addTaskPage extends AppCompatActivity {
         setContentView(R.layout.activity_add_task_page);
         Button addTask = findViewById(R.id.addTaskBtn);
 
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.teams_numbers, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                EditText task_name_input = findViewById(R.id.task_name);
-                EditText describtion_input = findViewById(R.id.describtion);
-
-                String taskName = task_name_input.getText().toString();
-                String describtion = describtion_input.getText().toString();
-
-                Task newTask = Task.builder().
-                        title(taskName).
-                        description(describtion).
-                        status("new").
-                        build();
-
-
-                Amplify.DataStore.save(newTask,
-                        success -> {
-                            Log.e("success", "INSERTED SUCCESfullY");
-                        }, failed -> {
-                            Log.e("faild", "FAILED TO INSERT");
-
-                        }
-                );
-          Amplify.API.mutate(ModelMutation.create(newTask),
-    response -> Log.i("MyAmplifyApp", "Todo with id: "),
-    error -> Log.e("MyAmplifyApp", "Create failed", error)
-);
-                Amplify.DataStore.observe(Task.class,
-                        started ->{
-                            Log.e(TAG,"observation began");
-                        },change ->{
-                            Log.e(TAG,change.item().toString());
-
-                        },failure -> Log.e(TAG,"observation failed",failure),
-                        () ->Log.i(TAG,"observation complete"));
-
-
-
-                //                task task=new task(taskName,describtion);
-//                Long newTaskId = AppDatabase.getInstance(getApplicationContext()).TaskDao().insertTask(task);
-//                Toast.makeText(addTaskPage.this,"INSERTED!",Toast.LENGTH_LONG).show();
+                Log.e("spinner",spinner.getSelectedItem().toString());
+                if (spinner.getSelectedItem().toString().matches("team 1") ) {
+                    saveTaskInTaskTableAndTeamTable("1");
+                }
+                 else if (spinner.getSelectedItem().toString().matches("team 2")) {
+                    saveTaskInTaskTableAndTeamTable("2");
+                } else if (spinner.getSelectedItem().toString().matches("team 3")) {
+                    saveTaskInTaskTableAndTeamTable("3");
+                }
 
 
             }
         });
     }
-}
+    public void saveTaskInTaskTableAndTeamTable(String id){
+
+        EditText task_name_input = findViewById(R.id.task_name);
+        EditText describtion_input = findViewById(R.id.describtion);
+
+        String taskName = task_name_input.getText().toString();
+        String describtion = describtion_input.getText().toString();
+
+
+
+
+
+
+        Amplify.API.query(ModelQuery.list(Team.class,Team.ID.contains(id)), teams->{
+            for(Team team:teams.getData()){
+              
+                if(team.getId().contains(id)){
+
+                    Task newTask = Task.builder().
+                            title(taskName).
+                            description(describtion).
+                            teamTasksId(id).
+                            status("new").
+                            build();
+
+                    Amplify.DataStore.save(newTask,
+                            success -> {
+                                Log.e("success", "INSERTED SUCCESFULLY");
+                            }, failed -> {
+                                Log.e("faild", "FAILED TO INSERT");
+
+                            }
+                    );
+
+                    Amplify.API.mutate(ModelMutation.create(newTask),
+
+                            response -> Log.i("MyAmplifyApp", "Todo with id: "),
+                            error -> Log.e("MyAmplifyApp", "Create failed", error)
+                    );
+
+                    break;
+                }
+
+            }
+            },error->{
+           Log.i("mutates team", "error");
+                    });
+
+    }
+
+    }
+

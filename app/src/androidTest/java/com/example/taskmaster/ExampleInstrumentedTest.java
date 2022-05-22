@@ -100,6 +100,21 @@ public class ExampleInstrumentedTest {
 
 
     }
+    @Test
+    public void CheckVisbilityForTeamSpinner() {
+        ActivityScenario.launch(MainActivity.class);
+        //check add task spinner
+        onView(withId(R.id.addTask)).perform(scrollTo());
+        onView(withId(R.id.addTask)).perform(click());
+        onView(withId(R.id.spinner)).check(matches(isDisplayed()));
+        pressBack();
+        //check setting spinner
+        onView(withId(R.id.setting)).perform(scrollTo());
+        onView(withId(R.id.setting)).perform(click());
+        onView(withId(R.id.spinner_setting)).check(matches(isDisplayed()));
+
+
+    }
 }
 
 

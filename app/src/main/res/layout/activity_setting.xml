@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/settingLayout"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="top"
     android:layout_height="match_parent"
     tools:context=".setting">
 
@@ -32,7 +32,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/submitBtnId"
+        android:layout_marginLeft="40dp"
         android:text="save">
 
     </Button>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="change team tasks"
+        android:textAllCaps="true"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:padding="50dp"/>
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:id="@+id/spinner_setting"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/backBtn"
+        android:text="back to home"/>
 </LinearLayout>

@@ -6,3 +6,8 @@ type Task @model {
   description: String
   status: String
 }
+type Team @model {
+  id: ID!
+  name: String!
+  tasks: [Task] @hasMany
+}
