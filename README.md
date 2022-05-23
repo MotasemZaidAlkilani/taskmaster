@@ -99,3 +99,16 @@ In addition to a username, allow the user to choose their team on the Settings p
 
 ![image description](screenshots/spinnerInSetting.jpg)
 
+_________
+### Lab 34 
+
+#### App Polish
+Ensure that your application follows Google’s guidelines. Make sure to get rid of any warnings in your app.
+
+#### Build Final AAB
+Build a signed AAB for your application. Include that AAB in your GitHub repo.
+
+______________
+
+
+
