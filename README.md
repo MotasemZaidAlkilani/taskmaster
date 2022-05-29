@@ -109,6 +109,12 @@ Ensure that your application follows Google’s guidelines. Make sure to get rid
 Build a signed AAB for your application. Include that AAB in your GitHub repo.
 
 ______________
+### Lab 36
 
+#### User Login
+Add Cognito to your Amplify setup. Add in user login and sign up flows to your application, using Cognito’s pre-built UI as appropriate. Display the logged-in user’s username (or nickname) somewhere relevant in your app.
+
+#### User Logout
+Allow users to log out of your application.
 
 
