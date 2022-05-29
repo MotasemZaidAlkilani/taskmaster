@@ -2,29 +2,25 @@ package com.example.taskmaster;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
-import com.amplifyframework.api.graphql.model.ModelQuery;
-import com.amplifyframework.api.rest.RestOptions;
 import com.amplifyframework.core.Amplify;
-import com.amplifyframework.core.model.query.Where;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         Button addTask=findViewById(R.id.addTask);
         Button allTask=findViewById(R.id.allTask);
         Button setting=findViewById(R.id.setting);
-
+        authSession("onCreate");
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
@@ -79,6 +75,26 @@ public class MainActivity extends AppCompatActivity {
             startActivity(settingActivity);
         });
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.logout:
+                logout();
+                break;
+            case R.id.resest:
+                // TODO: 5/25/22 Implement reset password
+                break;
+            default:
+        }
+        return true;
     }
     public List<Task> getAllItems() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -205,7 +221,23 @@ public void create3Teams(){
 
 
 }
-
+    private void authSession(String method) {
+        Amplify.Auth.fetchAuthSession(
+                result -> Log.i(TAG, "Auth Session => " + method + result.toString()),
+                error -> Log.e(TAG, error.toString())
+        );
+    }
+    private void logout() {
+        Amplify.Auth.signOut(
+                () -> {
+                    Log.i(TAG, "Signed out successfully");
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    authSession("logout");
+                    finish();
+                },
+                error -> Log.e(TAG, error.toString())
+        );
+    }
     }
 
 

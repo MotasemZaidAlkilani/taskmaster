@@ -19,10 +19,23 @@
     <string name="EnterUsername">enter Username</string>
     <string name="username">username</string>
 
-        <string-array name="teams_numbers">
-            <item>team 1</item>
-            <item>team 2</item>
-            <item>team 3</item>
-        </string-array>
+    <string-array name="teams_numbers">
+        <item>team 1</item>
+        <item>team 2</item>
+        <item>team 3</item>
+    </string-array>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="sign_up_prompt" />
+    <string name="title_activity_sign_up" />
+    <string name="label_enter_code" />
 
 </resources>
