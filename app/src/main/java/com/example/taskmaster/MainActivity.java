@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.example.taskmaster.ui.viewAdapter;
 
 import java.util.ArrayList;
@@ -40,13 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Button allTask=findViewById(R.id.allTask);
         Button setting=findViewById(R.id.setting);
         authSession("onCreate");
-        try {
-            Amplify.addPlugin(new AWSApiPlugin());
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-        } catch (AmplifyException e) {
-            e.printStackTrace();
-        }
+
         create3Teams();
         Amplify.DataStore.observe(Task.class,
                 started ->{
@@ -96,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
     public List<Task> getAllItems() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
@@ -139,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         );
 return datalist;
     }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -156,6 +154,7 @@ return datalist;
         String username = sharedPref.getString(getString(R.string.username), "");
         usernameTextView.setText(username+"’s tasks");
     }
+
 public viewAdapter customRecyclerViewAdapter(){
     viewAdapter customRecyclerViewAdapter = new viewAdapter(
             getAllItems(), position -> {
@@ -170,6 +169,7 @@ public viewAdapter customRecyclerViewAdapter(){
     });
     return customRecyclerViewAdapter;
 }
+
 public void create3Teams(){
 
     Amplify.DataStore.query(Team.class,
@@ -221,12 +221,14 @@ public void create3Teams(){
 
 
 }
+
     private void authSession(String method) {
         Amplify.Auth.fetchAuthSession(
                 result -> Log.i(TAG, "Auth Session => " + method + result.toString()),
                 error -> Log.e(TAG, error.toString())
         );
     }
+
     private void logout() {
         Amplify.Auth.signOut(
                 () -> {
@@ -238,6 +240,7 @@ public void create3Teams(){
                 error -> Log.e(TAG, error.toString())
         );
     }
+
     }
 
 

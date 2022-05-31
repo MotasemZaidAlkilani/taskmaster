@@ -37,5 +37,6 @@
     <string name="sign_up_prompt" />
     <string name="title_activity_sign_up" />
     <string name="label_enter_code" />
+    <string name="upload">upload(opt)</string>
 
 </resources>
