@@ -27,6 +27,7 @@ import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.example.taskmaster.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -43,12 +44,11 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         loadingProgressBar = findViewById(R.id.loading);
-        configureAmplify();
+
         signUpPrompt.setOnClickListener(View  ->{
             Intent navigateToSignUpIntent=new Intent(this,SignUpActivity.class);
             startActivity(navigateToSignUpIntent);
         });
-
 
 
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -60,14 +60,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        loginButton.setOnClickListener(view -> {
+
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
 
-            }
-        });
+            });
+
     }
 
     private void login(String email, String password) {
@@ -82,18 +81,5 @@ public class LoginActivity extends AppCompatActivity {
                 error -> Log.e(TAG, error.toString())
         );
     }
-    private void configureAmplify(){
-        try{
 
-            Amplify.addPlugin(new AWSCognitoAuthPlugin());
-            Amplify.addPlugin(new AWSApiPlugin());
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-
-
-            Log.i(TAG, "Initialized Amplify");
-        } catch (AmplifyException e) {
-            Log.e(TAG, "Could not initialize Amplify", e);
-        }
-    }
 }
