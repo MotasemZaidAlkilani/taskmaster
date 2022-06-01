@@ -94,10 +94,11 @@ public class addTaskPage extends AppCompatActivity {
 
 
 
-        Amplify.API.query(ModelQuery.list(Team.class), teams->{
-            for(Team team:teams.getData()){
-              
-                if(team.getId().contains(id)){
+        Amplify.DataStore.query(Team.class, teams->{
+
+                while(teams.hasNext()){
+
+                if (teams.next().getId().contains(id)) {
 
                     Task newTask = Task.builder().
                             title(taskName).
@@ -123,11 +124,12 @@ public class addTaskPage extends AppCompatActivity {
 
                     break;
                 }
-
             }
-            },error->{
+            }
+            ,error->{
            Log.i("mutates team", "error");
                     });
+
 
     }
     public void fileUpload(){
