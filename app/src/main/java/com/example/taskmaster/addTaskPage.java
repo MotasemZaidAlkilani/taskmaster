@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,9 @@ public class addTaskPage extends AppCompatActivity {
         setContentView(R.layout.activity_add_task_page);
         Button addTask = findViewById(R.id.addTaskBtn);
         Button upload = findViewById(R.id.uploadBtn);
+
+
+
 
         spinnerAdapterAndAddTaskButton();
 
@@ -89,6 +93,10 @@ public class addTaskPage extends AppCompatActivity {
         String taskName = task_name_input.getText().toString();
         String describtion = describtion_input.getText().toString();
 
+        Intent intent=getIntent();
+        String action=intent.getAction();
+        String type=intent.getType();
+
 
 
 
@@ -118,7 +126,19 @@ public class addTaskPage extends AppCompatActivity {
 
                     Amplify.API.mutate(ModelMutation.create(newTask),
 
-                            response -> Log.i("MyAmplifyApp", "Todo with id: "),
+                            response -> {Log.i("MyAmplifyApp", "Todo with id: ");
+                              if(Intent.ACTION_SEND.equals(action)&&type!=null){
+                        if(type.startsWith("image/")){
+                            try {
+                                sendImageMethod(intent,newTask.getTitle());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }}
+                    }
+
+
+                            ,
                             error -> Log.e("MyAmplifyApp", "Create failed", error)
                     );
 
@@ -132,11 +152,11 @@ public class addTaskPage extends AppCompatActivity {
 
 
     }
-    public void fileUpload(){
-        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
+    public void fileUpload(File file,String title){
+//        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.append("Example file contents");
             writer.close();
         } catch (Exception exception) {
@@ -144,8 +164,8 @@ public class addTaskPage extends AppCompatActivity {
         }
 
         Amplify.Storage.uploadFile(
-                "ExampleKey",
-                exampleFile,
+                title,
+                file,
                 result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
                 storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
         );
@@ -198,8 +218,7 @@ public class addTaskPage extends AppCompatActivity {
                 }
 
         }
-
-        private Bitmap getBtimapFromUri(Uri uri) throws IOException{
+     private Bitmap getBtimapFromUri(Uri uri) throws IOException{
              ParcelFileDescriptor parcelFileDescriptor=
                      getContentResolver().openFileDescriptor(uri,"r");
 
@@ -210,5 +229,21 @@ public class addTaskPage extends AppCompatActivity {
             return image;
 
         }
+     public void sendImageMethod(Intent intent,String title) throws IOException {
+        Uri imageUri=(Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if(imageUri !=null){
+            File file=getFileFromUri(imageUri,title);
+            fileUpload(file,title);
+        }
+     }
+     public File getFileFromUri(Uri uri,String title) throws IOException {
+         Bitmap bitmap=getBtimapFromUri(uri);
+
+         File file=new File(getApplicationContext().getFilesDir(),title+".jpg");
+         OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(file));
+         bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+         outputStream.close();
+         return file;
+     }
     }
 

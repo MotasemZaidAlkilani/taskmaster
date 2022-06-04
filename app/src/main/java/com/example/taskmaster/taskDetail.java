@@ -67,4 +67,5 @@ public class taskDetail extends AppCompatActivity {
                 error -> Log.e(TAG,  "Download Failure", error)
         );
     }
+
 }
