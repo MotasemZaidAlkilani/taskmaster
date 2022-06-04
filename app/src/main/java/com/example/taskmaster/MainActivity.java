@@ -240,7 +240,12 @@ public void create3Teams(){
                 error -> Log.e(TAG, error.toString())
         );
     }
-
+//public void share(){
+//        Intent sendIntent=new Intent();
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_STREAM,uriT);
+//        sendIntent.setType("image/*");
+//}
     }
 
 

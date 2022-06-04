@@ -8,4 +8,9 @@
     <item android:id="@+id/resest"
       app:showAsAction="never"
         android:title="Resest"/>
+
+    <item android:id="@+id/share"
+        app:showAsAction="always"
+        android:title="share"
+        android:icon="@drawable/ic_share"/>
 </menu>
