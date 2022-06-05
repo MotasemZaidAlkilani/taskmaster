@@ -26,16 +26,21 @@ public class taskDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
+
         TextView labTextView=findViewById(R.id.lab);
         TextView descriptionTextView=findViewById(R.id.describtion);
         TextView status=findViewById(R.id.status);
         Button completeTask=findViewById(R.id.complete);
+
         ImageView imageView=findViewById(R.id.imageView);
+        TextView lab_location_text_view=findViewById(R.id.location);
+
 
         Intent fromHome=getIntent();
         String lab_title=fromHome.getStringExtra("lab_title");
         String lab_body=fromHome.getStringExtra("lab_body");
         String lab_state=fromHome.getStringExtra("lab_status");
+        String lab_location=fromHome.getStringExtra("lab_location");
 
         pictureDownload(lab_title);
         Bitmap bitmap = BitmapFactory.decodeFile(getApplicationContext().getFilesDir()+"/"+lab_title+".jpg");
@@ -46,6 +51,7 @@ public class taskDetail extends AppCompatActivity {
         labTextView.setText(lab_title);
         descriptionTextView.setText(lab_body);
         status.setText(lab_state);
+        lab_location_text_view.setText(lab_location);
 //      completeTask.setOnClickListener(new View.OnClickListener() {
 //          @Override
 //          public void onClick(View view) {
