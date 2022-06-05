@@ -31,6 +31,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="location"
+            android:id="@+id/location"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:padding="50dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="status"
             android:id="@+id/status"
             android:textSize="20dp"

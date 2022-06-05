@@ -42,16 +42,11 @@ public class MainActivity extends AppCompatActivity {
         Button allTask=findViewById(R.id.allTask);
         Button setting=findViewById(R.id.setting);
         authSession("onCreate");
-
         create3Teams();
-        Amplify.DataStore.observe(Task.class,
-                started ->{
-                    Log.e(TAG,"observation began");
-                },change ->{
-                    Log.e(TAG,change.item().toString());
 
-                },failure -> Log.e(TAG,"observation failed",failure),
-                () ->Log.i(TAG,"observation complete"));
+
+
+
 
 
 
@@ -123,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
                         taskDetailActivity.putExtra("lab_title",task.getTitle());
                         taskDetailActivity.putExtra("lab_body",task.getDescription());
                         taskDetailActivity.putExtra("lab_status",task.getStatus());
+                        taskDetailActivity.putExtra("lab_location",task.getLocation());
+
                         startActivity(taskDetailActivity);
 
                     });
@@ -155,22 +152,25 @@ return datalist;
         usernameTextView.setText(username+"’s tasks");
     }
 
-public viewAdapter customRecyclerViewAdapter(){
+   public viewAdapter customRecyclerViewAdapter(){
     viewAdapter customRecyclerViewAdapter = new viewAdapter(
             getAllItems(), position -> {
         Task task = getAllItems().get(position);
         Intent taskDetailActivity=new Intent(this,taskDetail.class);
+        Log.e("location",task.getLocation());
 
+        taskDetailActivity.putExtra("lab_location",task.getLocation());
         taskDetailActivity.putExtra("lab_title",task.getTitle());
         taskDetailActivity.putExtra("lab_body",task.getDescription());
         taskDetailActivity.putExtra("lab_status",task.getStatus());
+
         startActivity(taskDetailActivity);
 
     });
     return customRecyclerViewAdapter;
 }
 
-public void create3Teams(){
+   public void create3Teams(){
 
     Amplify.DataStore.query(Team.class,
             (teams )-> runOnUiThread(() ->{
@@ -240,12 +240,7 @@ public void create3Teams(){
                 error -> Log.e(TAG, error.toString())
         );
     }
-//public void share(){
-//        Intent sendIntent=new Intent();
-//        sendIntent.setAction(Intent.ACTION_SEND);
-//        sendIntent.putExtra(Intent.EXTRA_STREAM,uriT);
-//        sendIntent.setType("image/*");
-//}
+
     }
 
 

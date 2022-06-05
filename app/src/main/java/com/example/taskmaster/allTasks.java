@@ -45,6 +45,7 @@ public class allTasks extends AppCompatActivity {
                         taskDetailActivity.putExtra("lab_title",task.getTitle());
                         taskDetailActivity.putExtra("lab_body",task.getDescription());
                         taskDetailActivity.putExtra("lab_status",task.getStatus());
+                        taskDetailActivity.putExtra("lab_location",task.getLocation());
                         startActivity(taskDetailActivity);
 
                     });
@@ -67,6 +68,8 @@ public class allTasks extends AppCompatActivity {
             taskDetailActivity.putExtra("lab_title",task.getTitle());
             taskDetailActivity.putExtra("lab_body",task.getDescription());
             taskDetailActivity.putExtra("lab_status",task.getStatus());
+            taskDetailActivity.putExtra("lab_location",task.getLocation());
+
             startActivity(taskDetailActivity);
 
         });
