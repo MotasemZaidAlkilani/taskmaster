@@ -58,34 +58,33 @@ public class addTaskPage extends AppCompatActivity {
     public static final int REQUEST_CODE = 123;
     public static final String TAG = addTaskPage.class.getSimpleName();
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private int PERMISSION_ID = 44;
+    private final int PERMISSION_ID = 44;
     double latitude;
     double longitude;
-    private LocationCallback LocationCallBack = new LocationCallback() {
 
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location lastLocation = locationResult.getLastLocation();
-            LatLng coordinate = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-        }
-    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_page);
-        Button addTask = findViewById(R.id.addTaskBtn);
         Button upload = findViewById(R.id.uploadBtn);
+        EditText task_name = findViewById(R.id.task_name);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         spinnerAdapterAndAddTaskButton();
 
-        upload.setOnClickListener(view -> {
-            pictureUpload();
-        });
+            upload.setOnClickListener(view -> {
 
-    }
+                if (task_name.getText().toString().trim().length()>0) {
+                    pictureUpload();
+                }
+                else{
+                    Toast.makeText(this.getApplicationContext(),"please enter task title first",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
 
     public String geocoder() throws IOException {
         try {
@@ -94,14 +93,11 @@ public class addTaskPage extends AppCompatActivity {
             Geocoder geo = new Geocoder(this.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geo.getFromLocation(latitude, longitude, 1);
 
-            if (addresses.isEmpty()) {
 
-            } else {
                 if (addresses.size() > 0) {
-                    String result = addresses.get(0).getCountryName() + "," + addresses.get(0).getLocality();
-                    return result;
+                    return addresses.get(0).getCountryName() + "," + addresses.get(0).getLocality();
                 }
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,7 +145,7 @@ public class addTaskPage extends AppCompatActivity {
         locationRequest.setNumUpdates(1);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, LocationCallBack, Looper.myLooper());
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, LocationCallBack(), Looper.myLooper());
     }
 
     private boolean isLocationEnabled() {
@@ -162,12 +158,6 @@ public class addTaskPage extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
-    }
-
-    @SuppressLint("MissingPermission")
-    private void getLastLocation() {
-
-
     }
 
     public void saveTaskInTaskTableAndTeamTable(String id) {
@@ -248,6 +238,14 @@ public class addTaskPage extends AppCompatActivity {
                                                         ,
                                                         error -> Log.e("MyAmplifyApp", "Create failed", error)
                                                 );
+                                                Amplify.DataStore.observe(Task.class,
+                                                        response -> Log.i("observe Task","begaun"),
+                                                        changed ->
+                                                            Log.i("observe", "Observation changed"),
+                                                        error ->
+                                                            Log.e("MyAmplifyApp", "Observation failed.",error),
+                                                        () ->Log.i("observation","complelete")
+                                                        );
 
                                             }
 
@@ -344,7 +342,6 @@ public class addTaskPage extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                return;
                 }
 
         }
@@ -365,6 +362,9 @@ public class addTaskPage extends AppCompatActivity {
             File file=getFileFromUri(imageUri,title);
             fileUpload(file,title);
         }
+     }
+     public LocationCallback LocationCallBack(){
+         return new LocationCallback();
      }
      public File getFileFromUri(Uri uri,String title) throws IOException {
          Bitmap bitmap=getBtimapFromUri(uri);

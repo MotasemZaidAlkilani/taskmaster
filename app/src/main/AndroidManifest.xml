@@ -55,7 +55,6 @@
             android:name=".MainActivity"
             android:exported="false">
 
-            <!-- android:theme="@style/splashTheme" -->
 
         </activity>
     </application>

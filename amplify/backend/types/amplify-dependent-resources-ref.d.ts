@@ -30,5 +30,24 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "Arn": "string"
         }
+    },
+    "analytics": {
+        "taskmaster": {
+            "Region": "string",
+            "Id": "string",
+            "appName": "string"
+        }
+    },
+    "predictions": {
+        "translateTexte4a68078": {
+            "region": "string",
+            "sourceLang": "string",
+            "targetLang": "string"
+        },
+        "speechGenerator74b77eaf": {
+            "region": "string",
+            "language": "string",
+            "voice": "string"
+        }
     }
 }
