@@ -142,4 +142,16 @@ When the user adds a task, their location should be retrieved and included as pa
 On the Task Detail activity, the location of a Task should be displayed if it exists.
 
 ______________
+### lab 41
 
+#### Analytics
+On the “Main” activity (and any other activities you like), start recording at least one AnalyticsEvent. Make sure you can view instances of that event, including their custom properties, in Amazon Pinpoint.
+
+#### Text To Speech
+On the Task Detail activity, add a button to read out the task’s description using the Amplify Predictions library.
+
+#### Second Predictions Integration
+Somewhere in your application, integrate one of the other Amplify Predictions APIs. See the possibilities at https://docs.amplify.aws/lib/predictions/getting-started/q/platform/android/#next-steps .
+
+![image description](screenshots/speechAndTranslate.png)
+__________
