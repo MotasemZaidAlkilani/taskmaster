@@ -63,28 +63,49 @@ public class addTaskPage extends AppCompatActivity {
     double longitude;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_page);
-        Button upload = findViewById(R.id.uploadBtn);
-        EditText task_name = findViewById(R.id.task_name);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         spinnerAdapterAndAddTaskButton();
+        uploadPictureButtonClickListener();
 
-            upload.setOnClickListener(view -> {
-
-                if (task_name.getText().toString().trim().length()>0) {
-                    pictureUpload();
-                }
-                else{
-                    Toast.makeText(this.getApplicationContext(),"please enter task title first",Toast.LENGTH_SHORT).show();
-                }
-            });
 
         }
+public void uploadPictureButtonClickListener(){
+
+    Button upload = findViewById(R.id.uploadBtn);
+    EditText task_name = findViewById(R.id.task_name);
+    upload.setOnClickListener(view -> {
+        if (task_name.getText().toString().trim().length()>0) {
+            Amplify.DataStore.query(Task.class,
+                    (tasks )-> runOnUiThread(() ->{
+                        boolean condition=true;
+                        Log.e("task title is empty",tasks.hasNext()+"");
+                        while(tasks.hasNext()){
+                            Log.e("task title",tasks.next().getTitle());
+                            if(task_name.getText().toString().contains(tasks.next().getTitle())){
+                                condition=false;
+                                break;
+                            }
+                        }
+              if(condition) {
+                  pictureUpload();
+              }
+              else{
+                  Toast.makeText(this.getApplicationContext(),"title already exists",Toast.LENGTH_SHORT).show();
+              }
+        }),error ->{
+
+                    });
+        }
+        else{
+            Toast.makeText(this.getApplicationContext(),"please enter task title first",Toast.LENGTH_SHORT).show();
+        }
+    });
+}
 
     public String geocoder() throws IOException {
         try {
@@ -104,6 +125,7 @@ public class addTaskPage extends AppCompatActivity {
         return null;
     }
 
+
     public void spinnerAdapterAndAddTaskButton() {
         Spinner spinner = findViewById(R.id.spinner);
         Button addTask = findViewById(R.id.addTaskBtn);
@@ -115,26 +137,52 @@ public class addTaskPage extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         addTask.setOnClickListener(view -> {
+            EditText task_name = findViewById(R.id.task_name);
+            EditText describtion=findViewById(R.id.describtion);
+            if(task_name.getText().toString().trim().length()>0&&describtion.getText().toString().trim().length()>0) {
 
-            Log.e("spinner", spinner.getSelectedItem().toString());
-            if (spinner.getSelectedItem().toString().matches("team 1")) {
-                saveTaskInTaskTableAndTeamTable("1");
-            } else if (spinner.getSelectedItem().toString().matches("team 2")) {
-                saveTaskInTaskTableAndTeamTable("2");
-            } else if (spinner.getSelectedItem().toString().matches("team 3")) {
-                saveTaskInTaskTableAndTeamTable("3");
+                    Amplify.DataStore.query(Task.class,
+                            (tasks)-> runOnUiThread(() ->{
+                                boolean condition=true;
+
+                                while(tasks.hasNext()){
+                                    if(task_name.getText().toString().equals(tasks.next().getTitle())){
+                                        condition=false;
+                                        break;
+                                    }
+                                }
+
+                if(condition) {
+
+                     if (spinner.getSelectedItem().toString().matches("team 1")) {
+                          saveTaskInTaskTableAndTeamTable("1");
+                    } else if (spinner.getSelectedItem().toString().matches("team 2")) {
+                          saveTaskInTaskTableAndTeamTable("2");
+                    } else if (spinner.getSelectedItem().toString().matches("team 3")) {
+                          saveTaskInTaskTableAndTeamTable("3");
+                       }
+                }else{
+                      Toast.makeText(this.getApplicationContext(),"title already exists",Toast.LENGTH_SHORT).show();
+                                }
+                            }),error ->{
+
+                            });
             }
-
+                                else{
+                Toast.makeText(this.getApplicationContext(),"please enter task name and describtion",Toast.LENGTH_SHORT).show();
+            }
 
         });
 
     }
+
 
     private boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
+
 
     @SuppressLint("MissingPermission")
     private void requestNewLocationData() {
@@ -148,17 +196,20 @@ public class addTaskPage extends AppCompatActivity {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, LocationCallBack(), Looper.myLooper());
     }
 
+
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER);
     }
 
+
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
+
 
     public void saveTaskInTaskTableAndTeamTable(String id) {
 
@@ -280,6 +331,8 @@ public class addTaskPage extends AppCompatActivity {
         startActivity(returnHome);
 
     }
+
+
     public void fileUpload(File file,String title){
 //        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
 
@@ -298,11 +351,14 @@ public class addTaskPage extends AppCompatActivity {
                 storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
         );
     }
+
+
     public void pictureUpload(){
         Intent intent=new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent,REQUEST_CODE);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -345,6 +401,8 @@ public class addTaskPage extends AppCompatActivity {
                 }
 
         }
+
+
      private Bitmap getBtimapFromUri(Uri uri) throws IOException{
              ParcelFileDescriptor parcelFileDescriptor=
                      getContentResolver().openFileDescriptor(uri,"r");
@@ -356,6 +414,8 @@ public class addTaskPage extends AppCompatActivity {
             return image;
 
         }
+
+
      public void sendImageMethod(Intent intent,String title) throws IOException {
         Uri imageUri=(Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if(imageUri !=null){
@@ -363,9 +423,13 @@ public class addTaskPage extends AppCompatActivity {
             fileUpload(file,title);
         }
      }
+
+
      public LocationCallback LocationCallBack(){
          return new LocationCallback();
      }
+
+
      public File getFileFromUri(Uri uri,String title) throws IOException {
          Bitmap bitmap=getBtimapFromUri(uri);
 

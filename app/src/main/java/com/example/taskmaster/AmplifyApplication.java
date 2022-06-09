@@ -12,6 +12,9 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.predictions.aws.AWSPredictionsPlugin;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 public class AmplifyApplication extends Application {
 
@@ -21,6 +24,13 @@ public class AmplifyApplication extends Application {
     public void onCreate(){
         super.onCreate();
 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                Log.i(TAG, "Initialized mobileAds");
+
+            }
+        });
         configureAmplify();
 
         AnalyticsEvent event=AnalyticsEvent.builder()

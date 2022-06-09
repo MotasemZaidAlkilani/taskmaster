@@ -34,7 +34,6 @@ public class allTasks extends AppCompatActivity {
                 (tasks )-> runOnUiThread(() ->{
                     while(tasks.hasNext()){
                         Task task=tasks.next();
-                        Log.e("task",task.getTitle());
                         datalist.add(task);
                     }
                     viewAdapter customRecyclerViewAdapter = new viewAdapter(
