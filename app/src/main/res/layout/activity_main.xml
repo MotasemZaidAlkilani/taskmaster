@@ -3,71 +3,129 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fillViewport="true"
+
     tools:context=".MainActivity">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/MainLayout"
-    android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="My Tasks"
-        android:id="@+id/myTaskText"
-        android:textAllCaps="true"
-        android:textSize="30dp"
-        android:textColor="@color/black"
-        android:padding="50dp"
-         />
+        android:id="@+id/MainLayout"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/usernameTitle"
-        android:text="@string/username"
-        android:textAllCaps="true"
-        android:layout_marginLeft="50dp"
-        android:textSize="20dp"
-        android:textColor="@color/black"
-
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addTask"
-        android:padding="10dp"
-        android:text="@string/add_task_button"
-        android:layout_margin="10dp"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:id="@+id/allTask"
-        android:text="@string/all_task_button"
-        android:layout_margin="10dp"/>
-
-        <Button
+        <TextView
+            android:id="@+id/myTaskText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:id="@+id/setting"
-            android:text="@string/setting"
-            android:layout_margin="10dp"/>
+            android:layout_alignParentTop="true"
+            android:padding="50dp"
+            android:text="My Tasks"
 
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/usernameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/myTaskText"
+            android:layout_marginLeft="50dp"
+            android:text="@string/username"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+
+            />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/recycler_view_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:fadeScrollbars="false"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_below="@+id/usernameTitle">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recycler_view_scroll"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/addTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@string/add_task_button" />
+
+            <Button
+                android:id="@+id/allTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@string/all_task_button" />
+
+            <Button
+                android:id="@+id/setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@string/setting" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/buttons"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            >
+        <Button
+            android:id="@+id/interstitialAd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:text="@string/interAd" />
+
+            <Button
+                android:id="@+id/rewardAd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@string/rewardAd" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="reward amonut :"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:id="@+id/rewardAmount"
+                android:layout_height="wrap_content"/>
     </LinearLayout>
 
-</LinearLayout>
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+
+    </RelativeLayout>
 </ScrollView>

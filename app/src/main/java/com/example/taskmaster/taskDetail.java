@@ -2,11 +2,9 @@ package com.example.taskmaster;
 
 import static android.content.ContentValues.TAG;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +15,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.predictions.models.LanguageType;
 
 import java.io.File;
@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.regex.Pattern;
 
-//import com.example.taskmaster.ui.AppDatabase;
 
 public class taskDetail extends AppCompatActivity {
     private final MediaPlayer mp = new MediaPlayer();
@@ -38,13 +37,23 @@ public class taskDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
 
+
+
+        setDataInLayout();
+        buttonsClickListeners();
+        downloadPictureAndAppearIt();
+
+
+
+
+
+
+
+    }
+    public void setDataInLayout(){
         TextView labTextView = findViewById(R.id.lab);
         TextView descriptionTextView = findViewById(R.id.describtion);
         TextView status = findViewById(R.id.status);
-        Button completeTask = findViewById(R.id.complete);
-        Button translateBtn = findViewById(R.id.translate);
-        Button speech=findViewById(R.id.speech);
-        ImageView imageView = findViewById(R.id.imageView);
         TextView lab_location_text_view = findViewById(R.id.location);
 
 
@@ -54,15 +63,72 @@ public class taskDetail extends AppCompatActivity {
         String lab_state = fromHome.getStringExtra("lab_status");
         String lab_location = fromHome.getStringExtra("lab_location");
 
-        pictureDownload(lab_title);
-        Bitmap bitmap = BitmapFactory.decodeFile(getApplicationContext().getFilesDir() + "/" + lab_title + ".jpg");
-        imageView.setImageBitmap(bitmap);
-
 
         labTextView.setText(lab_title);
         descriptionTextView.setText(lab_body);
         status.setText(lab_state);
         lab_location_text_view.setText(lab_location);
+    }
+    public void buttonsClickListeners(){
+        TextView descriptionTextView = findViewById(R.id.describtion);
+        Button translateBtn = findViewById(R.id.translate);
+
+        translateBtn.setOnClickListener(view ->{
+            Pattern p=Pattern.compile("^[a-zA-Z]");
+            String describtion=descriptionTextView.getText().toString();
+            if (p.matcher(describtion).find()) {
+                Toast.makeText(this, "english to arabic", Toast.LENGTH_SHORT).show();
+                Amplify.Predictions.translateText(
+                        descriptionTextView.getText().toString(),
+                        LanguageType.ENGLISH,
+                        LanguageType.ARABIC,
+                        result ->
+                        {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("MyAmplifyApp", result.getTranslatedText());
+                                    descriptionTextView.setText(result.getTranslatedText());
+                                    translateBtn.setText("Back To Original");
+                                }
+                            });
+
+                        },
+                        error -> Log.e("MyAmplifyApp", "Translation failed", error)
+                );
+            }
+            else {
+                Toast.makeText(this, "arabic to english", Toast.LENGTH_SHORT).show();
+
+                Amplify.Predictions.translateText(
+                        descriptionTextView.getText().toString(),
+                        LanguageType.ARABIC,
+                        LanguageType.ENGLISH,
+                        result ->
+                        {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("MyAmplifyApp", result.getTranslatedText());
+                                    descriptionTextView.setText(result.getTranslatedText());
+                                    translateBtn.setText("translate");
+                                }
+                            });
+
+                        },
+                        error -> Log.e("MyAmplifyApp", "Translation failed", error)
+                );
+            }
+
+
+
+
+
+        });
+
+
+        Button speech=findViewById(R.id.speech);
+
         speech.setOnClickListener(view ->{
             Amplify.Predictions.convertTextToSpeech(
                     descriptionTextView.getText().toString(),
@@ -71,65 +137,48 @@ public class taskDetail extends AppCompatActivity {
             );
         });
 
-        translateBtn.setOnClickListener(view ->{
-                 Pattern p=Pattern.compile("^[a-zA-Z]");
-                 String describtion=descriptionTextView.getText().toString();
-                    if (p.matcher(describtion).find()) {
-                        Toast.makeText(this, "english to arabic", Toast.LENGTH_SHORT).show();
-                        Amplify.Predictions.translateText(
-                                descriptionTextView.getText().toString(),
-                                LanguageType.ENGLISH,
-                                LanguageType.ARABIC,
-                                result ->
-                                {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Log.i("MyAmplifyApp", result.getTranslatedText());
-                             descriptionTextView.setText(result.getTranslatedText());
-                                            translateBtn.setText("Back To Original");
-                                        }
-                                    });
 
-                                },
-                                error -> Log.e("MyAmplifyApp", "Translation failed", error)
-                        );
-                    }
-                    else {
-                        Toast.makeText(this, "arabic to english", Toast.LENGTH_SHORT).show();
+        Button completeTask = findViewById(R.id.complete);
 
-                        Amplify.Predictions.translateText(
-                                descriptionTextView.getText().toString(),
-                                LanguageType.ARABIC,
-                                LanguageType.ENGLISH,
-                                result ->
-                                {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Log.i("MyAmplifyApp", result.getTranslatedText());
-                                            descriptionTextView.setText(result.getTranslatedText());
-                                            translateBtn.setText("translate");
-                                        }
-                                    });
+              completeTask.setOnClickListener(view -> {
+                  Intent fromHome = getIntent();
+                  String lab_id=fromHome.getStringExtra("lab_id");
 
-                                },
-                                error -> Log.e("MyAmplifyApp", "Translation failed", error)
-                        );
-                    }
+
+                  Amplify.DataStore.query(Task.class,tasks->{
+                      boolean condition=true;
+                      while(tasks.hasNext()){
+                          Log.e("check if there a tasks ",tasks.hasNext()+" ");
+                          Task orginlaTask=tasks.next();
+                          if(orginlaTask.getId().contains(lab_id)){
+                              condition=false;
+                              Task UpdatedTask = orginlaTask.copyOfBuilder()
+                                      .status("complete").
+                                      build();
+
+                              Amplify.DataStore.save(UpdatedTask,
+                                      saved -> Log.i("MyAmplifyApp", "Saved a post."),
+                                      failure -> Log.e("MyAmplifyApp", "Save failed.", failure)
+                              );
+
+
+                              Toast.makeText(this.getApplicationContext(), "task is completed", Toast.LENGTH_SHORT).show();
+                              Intent backToHome=new Intent(taskDetail.this,MainActivity.class);
+                              startActivity(backToHome);
+                          }
+                      }
+                      if(condition){
+                          Toast.makeText(this.getApplicationContext(),"there is no task",Toast.LENGTH_SHORT).show();
+                      }
+                  },error->{
+                      Toast.makeText(this.getApplicationContext(),"error",Toast.LENGTH_SHORT).show();
+                  });
 
 
 
 
-//      completeTask.setOnClickListener(new View.OnClickListener() {
-//          @Override
-//          public void onClick(View view) {
-//              AppDatabase.getInstance(getApplicationContext()).TaskDao().changeState("COMPLETE",lab_id);
-//              Intent backToHome=new Intent(taskDetail.this,MainActivity.class);
-//              startActivity(backToHome);
-//          }
-//      });
-        });
+          }
+    );
     }
     private void pictureDownload(String lab_name) {
 
@@ -142,6 +191,14 @@ public class taskDetail extends AppCompatActivity {
                 },
                 error -> Log.e(TAG,  "Download Failure", error)
         );
+    }
+    public void downloadPictureAndAppearIt(){
+        ImageView imageView = findViewById(R.id.imageView);
+        Intent fromHome = getIntent();
+        String lab_title = fromHome.getStringExtra("lab_title");
+        pictureDownload(lab_title);
+        Bitmap bitmap = BitmapFactory.decodeFile(getApplicationContext().getFilesDir() + "/" + lab_title + ".jpg");
+        imageView.setImageBitmap(bitmap);
     }
     private void playAudio(InputStream data) {
         File mp3File = new File(getCacheDir(), "audio.mp3");

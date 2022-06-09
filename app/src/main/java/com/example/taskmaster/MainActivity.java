@@ -2,6 +2,7 @@ package com.example.taskmaster;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,56 +17,139 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
-import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.auth.AuthChannelEventName;
 import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
-import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.amplifyframework.hub.HubChannel;
 import com.example.taskmaster.ui.viewAdapter;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-
+    private InterstitialAd mInterstitialAd;
+    private RewardedAd mRewardedAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        authSession("onCreate");
+        create3Teams();
+        BannerAdView();
+        buttonClickListerens();
+        clearDatastore();
+
+    }
+
+    public void clearDatastore(){
+        final String signedOutEventName = AuthChannelEventName.SIGNED_OUT.toString();
+
+        Amplify.Hub.subscribe(HubChannel.AUTH,
+                anyAuthEvent -> signedOutEventName.equals(anyAuthEvent.getName()),
+                signedOutEvent -> Amplify.DataStore.clear(
+                        () -> Log.i("MyAmplifyApp", "DataStore is cleared."),
+                        failure -> Log.e("MyAmplifyApp", "Failed to clear DataStore.")
+                )
+        );
+    }
+
+    public void buttonClickListerens(){
+        TextView rewardAmountTextView=findViewById(R.id.rewardAmount);
+
         Button addTask=findViewById(R.id.addTask);
         Button allTask=findViewById(R.id.allTask);
         Button setting=findViewById(R.id.setting);
-        authSession("onCreate");
-        create3Teams();
+        Button rewaredButton=findViewById(R.id.rewardAd);
+        Button interstitilAD=findViewById(R.id.interstitialAd);
+        rewaredButton.setOnClickListener(view ->{
+            AdRequest adRequest = new AdRequest.Builder().build();
 
+            RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917",
+                    adRequest, new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
 
+                            Log.d(TAG, loadAdError.getMessage());
+                            mRewardedAd = null;
+                        }
 
+                        @Override
+                        public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                            mRewardedAd = rewardedAd;
+                            if (mRewardedAd != null) {
+                                Activity activityContext = MainActivity.this;
+                                mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                                    @Override
+                                    public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                                        // Handle the reward.
+                                        Log.d(TAG, "The user earned the reward.");
+                                        int rewardAmount = rewardItem.getAmount();
+                                        String rewardType = rewardItem.getType();
+                                        rewardAmountTextView.setText("reward amount:"+rewardAmount);
+                                    }
+                                });
+                            } else {
+                                Log.d(TAG, "The rewarded ad wasn't ready yet.");
+                            }
+                            Log.d(TAG, "Ad was loaded.");
+                        }
+                    });
+        });
 
+        interstitilAD.setOnClickListener(view ->{
+            AdRequest adRequestInterstitialAD = new AdRequest.Builder().build();
 
+            InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequestInterstitialAD,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            mInterstitialAd = interstitialAd;
+                            if (mInterstitialAd != null) {
+                                mInterstitialAd.show(MainActivity.this);
+                            } else {
+                                Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                            }
+                            Log.i(TAG, "onAdLoaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            // Handle the error
+                            Log.i(TAG, loadAdError.getMessage());
+                            mInterstitialAd = null;
+                        }
+                    });
+        });
 
 
         addTask.setOnClickListener(View -> {
             Intent toAddTaskActivity=new Intent(this,addTaskPage.class);
             startActivity(toAddTaskActivity);
-            });
+        });
 
         allTask.setOnClickListener(View -> {
             Intent allTasksActivity=new Intent(this,allTasks.class);
 
-           startActivity(allTasksActivity);
+            startActivity(allTasksActivity);
 
         });
+
         setting.setOnClickListener(View ->{
             Intent settingActivity=new Intent(this,setting.class);
             startActivity(settingActivity);
         });
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                         Task task = datalist.get(position);
                         Intent taskDetailActivity=new Intent(this,taskDetail.class);
 
+                        taskDetailActivity.putExtra("lab_id",task.getId());
                         taskDetailActivity.putExtra("lab_title",task.getTitle());
                         taskDetailActivity.putExtra("lab_body",task.getDescription());
                         taskDetailActivity.putExtra("lab_status",task.getStatus());
@@ -239,6 +324,11 @@ return datalist;
                 },
                 error -> Log.e(TAG, error.toString())
         );
+    }
+    public void BannerAdView(){
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     }
