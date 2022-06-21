@@ -78,39 +78,46 @@ public class addTaskPage extends AppCompatActivity {
 
 public void uploadPictureButtonClickListener(){
 
+    Intent intent = getIntent();
+    String action = intent.getAction();
+    String type = intent.getType();
+
     Button upload = findViewById(R.id.uploadBtn);
     EditText task_name = findViewById(R.id.task_name);
     upload.setOnClickListener(view -> {
-        if (task_name.getText().toString().trim().length()>0) {
-            Amplify.DataStore.query(Task.class,
-                    (tasks )-> runOnUiThread(() ->{
-                        boolean condition=true;
+        if(Intent.ACTION_SEND.equals(action) && type != null) {
+            if (task_name.getText().toString().trim().length() > 0) {
+                Amplify.DataStore.query(Task.class,
+                        (tasks) -> runOnUiThread(() -> {
+                            boolean condition = true;
 
-                        while(tasks.hasNext()){
-                            Task task=tasks.next();
-                            Log.e(TAG,task.getTitle());
-                            if(task_name.getText().toString().contains(task.getTitle())){
-                                condition=false;
-                                break;
+                            while (tasks.hasNext()) {
+                                Task task = tasks.next();
+                                Log.e(TAG, task.getTitle());
+                                if (task_name.getText().toString().contains(task.getTitle())) {
+                                    condition = false;
+                                    break;
+                                }
                             }
-                        }
-              if(condition) {
-                  pictureUpload();
-              }
-              else{
-                  Toast.makeText(this.getApplicationContext(),"title already exists",Toast.LENGTH_SHORT).show();
-              }
-        }),error ->{
+                            if (condition) {
+                                pictureUpload();
+                            } else {
+                                Toast.makeText(this.getApplicationContext(), "title already exists", Toast.LENGTH_SHORT).show();
+                            }
+                        }), error -> {
 
-                    });
+                        });
+            } else {
+                Toast.makeText(this.getApplicationContext(), "please enter task title first", Toast.LENGTH_SHORT).show();
+            }
         }
         else{
-            Toast.makeText(this.getApplicationContext(),"please enter task title first",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getApplicationContext(), "already chosen an image", Toast.LENGTH_SHORT).show();
         }
     });
 }
 
-    public String geocoder() throws IOException {
+public String geocoder() throws IOException {
         try {
 
 
@@ -128,8 +135,7 @@ public void uploadPictureButtonClickListener(){
         return null;
     }
 
-
-    public void spinnerAdapterAndAddTaskButton() {
+public void spinnerAdapterAndAddTaskButton() {
         Spinner spinner = findViewById(R.id.spinner);
         Button addTask = findViewById(R.id.addTaskBtn);
 
@@ -185,15 +191,14 @@ public void uploadPictureButtonClickListener(){
     }
 
 
-    private boolean checkPermissions() {
+private boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData() {
+@SuppressLint("MissingPermission")
+private void requestNewLocationData() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5);
@@ -205,21 +210,21 @@ public void uploadPictureButtonClickListener(){
     }
 
 
-    private boolean isLocationEnabled() {
+private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER);
     }
 
 
-    private void requestPermissions() {
+private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
 
 
-    public void saveTaskInTaskTableAndTeamTable(String id) {
+public void saveTaskInTaskTableAndTeamTable(String id) {
 
         EditText task_name_input = findViewById(R.id.task_name);
         EditText describtion_input = findViewById(R.id.describtion);
@@ -234,7 +239,6 @@ public void uploadPictureButtonClickListener(){
 
         Amplify.DataStore.query(Team.class, teams -> {
                     Log.e(TAG,"five");
-//            if (teams.hasData()){
                 while (teams.hasNext()) {
 
                     if (teams.next().getId().contains(id)) {
@@ -295,6 +299,7 @@ public void uploadPictureButtonClickListener(){
                                                         if (Intent.ACTION_SEND.equals(action) && type != null) {
                                                             if (type.startsWith("image/")) {
                                                                 try {
+                                                                    Log.e(TAG,"intent image first");
                                                                     sendImageMethod(intent, newTask.getTitle());
                                                                     Log.e(TAG,"send Image method");
                                                                 } catch (IOException e) {
@@ -347,24 +352,25 @@ public void uploadPictureButtonClickListener(){
 
     }
 
+public void fileUpload(File file,String title){
+        Log.e(TAG,"intent image eight");
 
-    public void fileUpload(File file,String title){
-//        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
-
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.append("Example file contents");
-            writer.close();
-        } catch (Exception exception) {
-            Log.e(TAG, "Upload failed", exception);
-        }
+//        try {
+//            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//            writer.append("Example file contents");
+//            writer.close();
+//        } catch (Exception exception) {
+//            Log.e(TAG, "Upload failed", exception);
+//        }
 
         Amplify.Storage.uploadFile(
-                title,
+                title+".jpg",
                 file,
-                result -> Log.i(TAG, "Successfully uploaded: " + result.getKey()),
+                result -> Log.e(TAG, "Successfully uploaded: " + result.getKey()),
                 storageFailure -> Log.e(TAG, "Upload failed", storageFailure)
         );
+        Log.e(TAG,"intent image ten");
+
     }
 
 
@@ -432,10 +438,17 @@ public void uploadPictureButtonClickListener(){
 
 
      public void sendImageMethod(Intent intent,String title) throws IOException {
-        Uri imageUri=(Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri imageUri=intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if(imageUri !=null){
+            Log.e(TAG,"intent image second");
+
             File file=getFileFromUri(imageUri,title);
+            Log.e(TAG,"intent image third");
+
             fileUpload(file,title);
+            Log.e(TAG,"intent image fourth");
+
+
         }
      }
 
@@ -452,7 +465,10 @@ public void uploadPictureButtonClickListener(){
          OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(file));
          bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
          outputStream.close();
+         Log.e(TAG,"intent image six");
+
          return file;
+
      }
     }
 
