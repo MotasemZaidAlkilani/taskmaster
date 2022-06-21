@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.auth.AuthChannelEventName;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    String TAG="MainActivity";
     private InterstitialAd mInterstitialAd;
     private RewardedAd mRewardedAd;
     @Override
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         authSession("onCreate");
-        create3Teams();
+       create3Teams();
         BannerAdView();
         buttonClickListerens();
         clearDatastore();
@@ -165,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
                 logout();
                 break;
             case R.id.resest:
-                // TODO: 5/25/22 Implement reset password
                 break;
             default:
         }
@@ -173,11 +174,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<Task> getAllItems() {
+        Log.e(TAG,"first");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
         List<Task>datalist = new ArrayList();
         Amplify.DataStore.query(Task.class,
-                (tasks )-> runOnUiThread(() ->{
+                tasks -> runOnUiThread(() ->{
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                     String Team = sharedPref.getString("recycleViewTeam", "");
                     Log.e("team sharedPref ",Team);
@@ -186,14 +188,16 @@ public class MainActivity extends AppCompatActivity {
                     else if(Team.contains("team 2")){ id="2"; }
                     else if(Team.contains("team 3")){id="3"; }
                     Log.e("id sharedPref ",id);
+                    Log.e(TAG,"second");
 
-                    while(tasks.hasNext()){
-                        Task task=tasks.next();
-                        if(task.getTeamTasksId().contains(id)) {
-                            Log.e("task", task.getTitle());
-                            datalist.add(task);
+                        while (tasks.hasNext()) {
+                            Task task=tasks.next();
+                            if (task.getTeamTasksId().contains(id)) {
+                                Log.e(TAG, task.getTitle());
+                                datalist.add(task);
+                            }
                         }
-                    }
+
                     viewAdapter customRecyclerViewAdapter = new viewAdapter(
                             datalist, position -> {
                         Task task = datalist.get(position);
@@ -204,13 +208,16 @@ public class MainActivity extends AppCompatActivity {
                         taskDetailActivity.putExtra("lab_body",task.getDescription());
                         taskDetailActivity.putExtra("lab_status",task.getStatus());
                         taskDetailActivity.putExtra("lab_location",task.getLocation());
-
+                        Log.e(TAG,"third");
                         startActivity(taskDetailActivity);
 
                     });
+                    Log.e(TAG,"fourth");
+
                     recyclerView.setAdapter(customRecyclerViewAdapter);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    Log.e(TAG,"five");
 
                 }), error -> {
 
@@ -260,44 +267,75 @@ return datalist;
     Amplify.DataStore.query(Team.class,
             (teams )-> runOnUiThread(() ->{
                 boolean Team1IsExist=true,Team2IsExist=true,Team3IsExist=true;
-                while(teams.hasNext()){
-                    Team team=teams.next();
-                    if(team.getId()=="1") {
-                        Team1IsExist=false;
-                    }
-                    else if(team.getId()=="2") {
-                        Team2IsExist=false;
-                    }
-                    else if(team.getId()=="3") {
-                        Team3IsExist=false;
-                    }
-                    Log.e("task",team.getName());
-                }
-               if(Team1IsExist){
-                   Team team1=Team.builder().name("Team1").id("1").build();
-                   Amplify.API.mutate(ModelMutation.create(team1),
-                           response -> {
-                               Log.i("Team1", "createTeam1");
 
-                           }  ,
-                           error -> Log.e("Team1", "Create failed", error)
-                   );}
-                        if(Team2IsExist){
-                            Team team2=Team.builder().name("Team2").id("2").build();
-                            Amplify.API.mutate(ModelMutation.create(team2),
-                                    response -> {Log.i("Team2", "createTeam2");
-                                    }
-,
-                                    error -> Log.e("Team2", "Create failed", error)
-                            );}
-                        if(Team3IsExist){
-                            Team team3=Team.builder().name("Team3").id("3").build();
-                            Amplify.API.mutate(ModelMutation.create(team3),
-                                    response -> {Log.i("Team3", "createTeam3");
-                                    },
-                                    error -> Log.e("Team3", "Create failed", error)
-                            );}
-            }
+                    while (teams.hasNext()) {
+                        Team team=teams.next();
+                        if (team.getId() == "1") {
+                            Team1IsExist = false;
+                        } else if (team.getId() == "2") {
+                            Team2IsExist = false;
+                        } else if (team.getId() == "3") {
+                            Team3IsExist = false;
+                        }
+                        Log.e("task", team.getName());
+                    }
+
+
+                    if (Team1IsExist) {
+                        Team team1 = Team.builder().name("Team1").id("1").build();
+                        Amplify.DataStore.save(team1,
+                                success -> {
+                                    Log.e(TAG, "INSERTED SUCCESFULLY team1"+team1.getName());
+                                }, failed -> {
+                                    Log.e(TAG, "FAILED TO INSERT team1");
+
+                                }
+                        );
+                        Amplify.API.mutate(ModelMutation.create(team1),
+                                response -> {
+                                    Log.e("Team1", "createTeam1"+team1.getName());
+
+                                },
+                                error -> Log.e("Team1", "Create failed", error)
+                        );
+                    }
+                    if (Team2IsExist) {
+                        Team team2 = Team.builder().name("Team2").id("2").build();
+                        Amplify.DataStore.save(team2,
+                                success -> {
+                                    Log.e(TAG, "INSERTED SUCCESFULLY team2"+team2.getName());
+                                }, failed -> {
+                                    Log.e(TAG, "FAILED TO INSERT team2");
+
+                                }
+                        );
+                        Amplify.API.mutate(ModelMutation.create(team2),
+                                response -> {
+                                    Log.e(TAG, "createTeam2"+team2.getName());
+                                }
+                                ,
+                                error -> Log.e(TAG, "Create failed team2", error)
+                        );
+                    }
+                    if (Team3IsExist) {
+                        Team team3 = Team.builder().name("Team3").id("3").build();
+                        Amplify.DataStore.save(team3,
+                                success -> {
+                                    Log.e(TAG, "INSERTED SUCCESFULLY team3"+team3.getName());
+                                }, failed -> {
+                                    Log.e(TAG, "FAILED TO INSERT team3");
+
+                                }
+                        );
+                        Amplify.API.mutate(ModelMutation.create(team3),
+                                response -> {
+                                    Log.e(TAG, "createTeam3");
+                                },
+                                error -> Log.e(TAG, "Create failed team3", error)
+                        );
+                    }
+                }
+
                 ), error -> {}
     );
 
@@ -325,6 +363,7 @@ return datalist;
                 error -> Log.e(TAG, error.toString())
         );
     }
+
     public void BannerAdView(){
         AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
