@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        authSession("onCreate");
+//        authSession("onCreate");
        create3Teams();
         BannerAdView();
         buttonClickListerens();
@@ -182,12 +182,12 @@ public class MainActivity extends AppCompatActivity {
                 tasks -> runOnUiThread(() ->{
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                     String Team = sharedPref.getString("recycleViewTeam", "");
-                    Log.e("team sharedPref ",Team);
+                    Log.e(TAG,Team);
                     String id="1";
                     if(Team.contains("team 1")){ id="1"; }
                     else if(Team.contains("team 2")){ id="2"; }
                     else if(Team.contains("team 3")){id="3"; }
-                    Log.e("id sharedPref ",id);
+                    Log.e(TAG,id);
                     Log.e(TAG,"second");
 
                         while (tasks.hasNext()) {
@@ -270,19 +270,22 @@ return datalist;
 
                     while (teams.hasNext()) {
                         Team team=teams.next();
-                        if (team.getId() == "1") {
+                        if (team.getId().contains( "1")) {
                             Team1IsExist = false;
-                        } else if (team.getId() == "2") {
+                        } else if (team.getId().contains("2") ){
                             Team2IsExist = false;
-                        } else if (team.getId() == "3") {
+                        } else if (team.getId() .contains( "3")) {
                             Team3IsExist = false;
                         }
-                        Log.e("task", team.getName());
+                        Log.e(TAG, team.getName());
                     }
+                        Log.e(TAG, "team1"+Team1IsExist);
+                        Log.e(TAG, "team2"+Team2IsExist);
+                        Log.e(TAG, "team3"+Team3IsExist);
 
+                        Team team1 = Team.builder().name("Team1").id("1").build();
 
                     if (Team1IsExist) {
-                        Team team1 = Team.builder().name("Team1").id("1").build();
                         Amplify.DataStore.save(team1,
                                 success -> {
                                     Log.e(TAG, "INSERTED SUCCESFULLY team1"+team1.getName());
@@ -291,16 +294,17 @@ return datalist;
 
                                 }
                         );
+
+                    }
                         Amplify.API.mutate(ModelMutation.create(team1),
                                 response -> {
-                                    Log.e("Team1", "createTeam1"+team1.getName());
+                                    Log.e(TAG, "createTeam1"+team1.getName());
 
                                 },
-                                error -> Log.e("Team1", "Create failed", error)
+                                error -> Log.e(TAG, "Create failed", error)
                         );
-                    }
-                    if (Team2IsExist) {
                         Team team2 = Team.builder().name("Team2").id("2").build();
+                        if (Team2IsExist) {
                         Amplify.DataStore.save(team2,
                                 success -> {
                                     Log.e(TAG, "INSERTED SUCCESFULLY team2"+team2.getName());
@@ -309,31 +313,33 @@ return datalist;
 
                                 }
                         );
+
+                    }
                         Amplify.API.mutate(ModelMutation.create(team2),
                                 response -> {
-                                    Log.e(TAG, "createTeam2"+team2.getName());
+                                    Log.e(TAG, "create Team2 "+team2.getName());
                                 }
                                 ,
-                                error -> Log.e(TAG, "Create failed team2", error)
+                                error -> Log.e(TAG, "Create failed team2 ", error)
                         );
-                    }
-                    if (Team3IsExist) {
                         Team team3 = Team.builder().name("Team3").id("3").build();
+                        if (Team3IsExist) {
                         Amplify.DataStore.save(team3,
                                 success -> {
-                                    Log.e(TAG, "INSERTED SUCCESFULLY team3"+team3.getName());
+                                    Log.e(TAG, "INSERTED SUCCESFULLY team3 "+team3.getName());
                                 }, failed -> {
                                     Log.e(TAG, "FAILED TO INSERT team3");
 
                                 }
                         );
+
+                    }
                         Amplify.API.mutate(ModelMutation.create(team3),
                                 response -> {
                                     Log.e(TAG, "createTeam3");
                                 },
                                 error -> Log.e(TAG, "Create failed team3", error)
                         );
-                    }
                 }
 
                 ), error -> {}
