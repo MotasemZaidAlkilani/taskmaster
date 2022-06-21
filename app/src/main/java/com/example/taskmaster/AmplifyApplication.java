@@ -23,6 +23,7 @@ public class AmplifyApplication extends Application {
     @Override
     public void onCreate(){
         super.onCreate();
+        configureAmplify();
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -31,7 +32,6 @@ public class AmplifyApplication extends Application {
 
             }
         });
-        configureAmplify();
 
         AnalyticsEvent event=AnalyticsEvent.builder()
                 .name("openMyApp")

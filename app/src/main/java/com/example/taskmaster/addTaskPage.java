@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
@@ -74,6 +75,7 @@ public class addTaskPage extends AppCompatActivity {
 
 
         }
+
 public void uploadPictureButtonClickListener(){
 
     Button upload = findViewById(R.id.uploadBtn);
@@ -83,10 +85,11 @@ public void uploadPictureButtonClickListener(){
             Amplify.DataStore.query(Task.class,
                     (tasks )-> runOnUiThread(() ->{
                         boolean condition=true;
-                        Log.e("task title is empty",tasks.hasNext()+"");
+
                         while(tasks.hasNext()){
-                            Log.e("task title",tasks.next().getTitle());
-                            if(task_name.getText().toString().contains(tasks.next().getTitle())){
+                            Task task=tasks.next();
+                            Log.e(TAG,task.getTitle());
+                            if(task_name.getText().toString().contains(task.getTitle())){
                                 condition=false;
                                 break;
                             }
@@ -135,7 +138,7 @@ public void uploadPictureButtonClickListener(){
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
+        Log.e(TAG,"first");
         addTask.setOnClickListener(view -> {
             EditText task_name = findViewById(R.id.task_name);
             EditText describtion=findViewById(R.id.describtion);
@@ -144,9 +147,10 @@ public void uploadPictureButtonClickListener(){
                     Amplify.DataStore.query(Task.class,
                             (tasks)-> runOnUiThread(() ->{
                                 boolean condition=true;
-
                                 while(tasks.hasNext()){
-                                    if(task_name.getText().toString().equals(tasks.next().getTitle())){
+                                    Task task=tasks.next();
+                                    Log.e(TAG,"second");
+                                    if(task_name.getText().toString().equals(task.getTitle())){
                                         condition=false;
                                         break;
                                     }
@@ -155,11 +159,15 @@ public void uploadPictureButtonClickListener(){
                 if(condition) {
 
                      if (spinner.getSelectedItem().toString().matches("team 1")) {
+
                           saveTaskInTaskTableAndTeamTable("1");
+                         Log.e(TAG,"third");
                     } else if (spinner.getSelectedItem().toString().matches("team 2")) {
                           saveTaskInTaskTableAndTeamTable("2");
+                         Log.e(TAG,"third");
                     } else if (spinner.getSelectedItem().toString().matches("team 3")) {
                           saveTaskInTaskTableAndTeamTable("3");
+                         Log.e(TAG,"third");
                        }
                 }else{
                       Toast.makeText(this.getApplicationContext(),"title already exists",Toast.LENGTH_SHORT).show();
@@ -222,113 +230,120 @@ public void uploadPictureButtonClickListener(){
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
-
+        Log.e(TAG,"fourth");
 
         Amplify.DataStore.query(Team.class, teams -> {
+                    Log.e(TAG,"five");
+//            if (teams.hasData()){
+                while (teams.hasNext()) {
 
-                    while (teams.hasNext()) {
+                    if (teams.next().getId().contains(id)) {
+                        Log.e(TAG,"eight");
 
-                        if (teams.next().getId().contains(id)) {
-                            if (checkPermissions()) {
+                        if (checkPermissions()) {
+                            Log.e(TAG,"ten");
 
-                                if (isLocationEnabled()) {
-                                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                        return;
-                                    }
-                                    fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                                        @Override
-                                        public void onComplete(@NonNull com.google.android.gms.tasks.Task<Location> task) {
-                                            Location location = task.getResult();
-                                            if (location == null) {
-                                                requestNewLocationData();
-                                            } else {
+                            if (isLocationEnabled()) {
+                                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    return;
+                                }
+                                fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                                    @Override
+                                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Location> task) {
+                                        Location location = task.getResult();
+                                        if (location == null) {
+                                            Log.e(TAG,"elven");
 
-                                                latitude = location.getLatitude();
-                                                longitude = location.getLongitude();
-                                                Log.e("coordanite", latitude + " ");
+                                            requestNewLocationData();
+                                        } else {
+                                            Log.e(TAG,"nine");
 
-                                                String result= null;
-                                                try {
-                                                    result = geocoder();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
+                                            latitude = location.getLatitude();
+                                            longitude = location.getLongitude();
+                                            Log.e(TAG, latitude + " ");
 
-
-                                                Task newTask = Task.builder().
-                                                            title(taskName).
-                                                            description(describtion).
-                                                            teamTasksId(id).
-                                                            status("new").
-                                                            location(result).
-                                                            build();
-
-                                                Amplify.DataStore.save(newTask,
-                                                        success -> {
-                                                            Log.e("success", "INSERTED SUCCESFULLY");
-                                                        }, failed -> {
-                                                            Log.e("faild", "FAILED TO INSERT");
-
-                                                        }
-                                                );
-
-                                                Amplify.API.mutate(ModelMutation.create(newTask),
-
-                                                        response -> {Log.i("MyAmplifyApp", "Todo with id: ");
-                                                            if(Intent.ACTION_SEND.equals(action)&&type!=null){
-                                                                if(type.startsWith("image/")){
-                                                                    try {
-                                                                        sendImageMethod(intent,newTask.getTitle());
-                                                                    } catch (IOException e) {
-                                                                        e.printStackTrace();
-                                                                    }
-                                                                }}
-                                                        }
-
-
-                                                        ,
-                                                        error -> Log.e("MyAmplifyApp", "Create failed", error)
-                                                );
-                                                Amplify.DataStore.observe(Task.class,
-                                                        response -> Log.i("observe Task","begaun"),
-                                                        changed ->
-                                                            Log.i("observe", "Observation changed"),
-                                                        error ->
-                                                            Log.e("MyAmplifyApp", "Observation failed.",error),
-                                                        () ->Log.i("observation","complelete")
-                                                        );
-
+                                            String result = null;
+                                            try {
+                                                result = geocoder();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
                                             }
 
 
+                                            Task newTask = Task.builder().
+                                                    title(taskName).
+                                                    description(describtion).
+                                                    teamTasksId(id).
+                                                    status("new").
+                                                    location(result).
+                                                    build();
+
+                                            Amplify.DataStore.save(newTask,
+                                                    success -> {
+                                                        Log.e(TAG, "INSERTED SUCCESFULLY task");
+                                                    }, failed -> {
+                                                        Log.e(TAG, "FAILED TO INSERT task");
+
+                                                    }
+                                            );
+
+
+                                            Amplify.API.mutate(ModelMutation.create(newTask),
+
+                                                    response -> {
+                                                        Log.i(TAG, "Todo with id mutate ");
+                                                        if (Intent.ACTION_SEND.equals(action) && type != null) {
+                                                            if (type.startsWith("image/")) {
+                                                                try {
+                                                                    sendImageMethod(intent, newTask.getTitle());
+                                                                    Log.e(TAG,"send Image method");
+                                                                } catch (IOException e) {
+                                                                    Log.e(TAG,"error send Image method");
+
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    ,
+                                                    error -> Log.e(TAG, "Create failed mutate", error)
+                                            );
+                                            Log.e(TAG,"added task with location");
+                                            Intent returnHome=new Intent(getApplicationContext(),MainActivity.class);
+                                            startActivity(returnHome);
+
                                         }
 
-                                    });
 
+                                    }
+
+                                });
+
+                            } else {
+                                Toast.makeText(this, "please turn on your location", Toast.LENGTH_SHORT).show();
+                                Intent intent2 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent2);
+                            }
                         } else {
-                            Toast.makeText(this, "please turn on your location", Toast.LENGTH_SHORT).show();
-                            Intent intent2 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent2);
+                            requestPermissions();
+
                         }
-                    }else
-                    {
-                        requestPermissions();
 
+
+                        break;
                     }
-
-
-
-
-                    break;
                 }
-            }
+//        }
+//            else{
+//                Log.e(TAG,"there is no teams in API")  ;
+//            }
+                    Log.e(TAG,"seven");
             }
             ,error->{
-           Log.i("mutates team", "error");
+           Log.i(TAG, "error");
                     });
-        Toast.makeText(this,"added task with location",Toast.LENGTH_SHORT).show();
-        Intent returnHome=new Intent(this,MainActivity.class);
-        startActivity(returnHome);
+
 
     }
 
@@ -341,14 +356,14 @@ public void uploadPictureButtonClickListener(){
             writer.append("Example file contents");
             writer.close();
         } catch (Exception exception) {
-            Log.e("MyAmplifyApp", "Upload failed", exception);
+            Log.e(TAG, "Upload failed", exception);
         }
 
         Amplify.Storage.uploadFile(
                 title,
                 file,
-                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
-                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+                result -> Log.i(TAG, "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e(TAG, "Upload failed", storageFailure)
         );
     }
 
